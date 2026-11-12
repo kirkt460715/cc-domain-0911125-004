@@ -1,0 +1,186 @@
+{
+  "source_id": "research-source",
+  "authorization": {
+    "purposes": [
+      "research"
+    ],
+    "regions": [
+      "cn",
+      "eu"
+    ],
+    "valid_from": "2026-01-01T00:00:00Z",
+    "valid_until": "2027-01-01T00:00:00Z",
+    "obligations": [
+      "attribution"
+    ],
+    "allow_export": true
+  },
+  "profile": {},
+  "records": [
+    {
+      "external_id": "alpha-overview",
+      "version": 1,
+      "text": "alpha beta gamma delta epsilon",
+      "metadata": {
+        "title": "natural overview"
+      }
+    },
+    {
+      "external_id": "alpha-padded",
+      "version": 1,
+      "text": "alpha alpha f001 f002 f003 f004 f005 f006 f007 f008 f009 f010 f011 f012 f013 f014 f015 f016 f017 f018 f019 f020 f021 f022 f023 f024 f025 f026 f027 f028 f029 f030 f031 f032 f033 f034 f035 f036 f037 f038 f039 f040 f041 f042 f043 f044 f045 f046 f047 f048 f049 f050 f051 f052 f053 f054 f055 f056 f057 f058 f059 f060 f061 f062 f063 f064 f065 f066 f067 f068 f069 f070 f071 f072 f073 f074 f075 f076 f077 f078 f079 f080 f081 f082 f083 f084 f085 f086 f087 f088 f089 f090 f091 f092 f093 f094 f095 f096 f097 f098 f099 delta f101 f102 f103 f104 f105 f106 f107 f108 f109 f110 f111 f112 f113 f114 f115 f116 f117 f118 f119 f120 f121 f122 f123 f124 f125 f126 f127 f128 f129 f130 f131 f132 f133 f134 f135 f136 f137 f138 f139 f140 f141 f142 f143 f144 f145 f146 f147 f148 f149 f150 f151 f152 f153 f154 f155 f156 f157 f158 f159 f160 f161 f162 f163 f164 f165 f166 f167 f168 f169 f170 f171 f172 f173 f174 f175 f176 f177 f178 f179 f180 f181 f182 f183 f184 f185 f186 f187 f188 f189 f190 f191 f192 f193 f194 f195 f196 f197 f198",
+      "metadata": {
+        "title": "padded repost farm"
+      }
+    },
+    {
+      "external_id": "quasar-brief",
+      "version": 1,
+      "text": "quasar delta briefing notes overview",
+      "metadata": {
+        "title": "professional briefing"
+      }
+    },
+    {
+      "external_id": "quasar-blast",
+      "version": 1,
+      "text": "quasar quasar quasar quasar quasar quasar quasar quasar quasar quasar quasar quasar quasar quasar quasar quasar blast memo appendix figures",
+      "metadata": {
+        "title": "keyword blast"
+      }
+    },
+    {
+      "external_id": "gamma-report",
+      "version": 1,
+      "text": "gamma gamma gamma report summary delta",
+      "metadata": {
+        "title": "gamma report"
+      }
+    },
+    {
+      "external_id": "delta-memo",
+      "version": 1,
+      "text": "delta memo appendix figures delta delta",
+      "metadata": {
+        "title": "delta memo"
+      }
+    },
+    {
+      "external_id": "quasar-repost",
+      "version": 1,
+      "text": "quasar delta briefing notes overview",
+      "metadata": {
+        "title": "repost of the briefing"
+      }
+    }
+  ],
+  "context": {
+    "purpose": "research",
+    "region": "cn",
+    "at": "2026-11-11T00:00:00Z",
+    "fulfilled_obligations": [
+      "attribution"
+    ]
+  },
+  "study": {
+    "study_id": "ranking-research",
+    "index_id": "research-index",
+    "editor": "editor",
+    "k": 2,
+    "families": [
+      {
+        "family_id": "dev-gamma",
+        "kind": "development",
+        "role": "dev",
+        "variants": [
+          {
+            "variant_id": "v1",
+            "text": "gamma"
+          }
+        ]
+      },
+      {
+        "family_id": "eval-high-frequency",
+        "kind": "high_frequency",
+        "role": "eval",
+        "variants": [
+          {
+            "variant_id": "v1",
+            "text": "alpha"
+          },
+          {
+            "variant_id": "v2",
+            "text": "Alpha"
+          }
+        ]
+      },
+      {
+        "family_id": "eval-professional",
+        "kind": "professional",
+        "role": "eval",
+        "variants": [
+          {
+            "variant_id": "v1",
+            "text": "quasar delta"
+          },
+          {
+            "variant_id": "v2",
+            "text": "delta quasar"
+          }
+        ]
+      }
+    ],
+    "judgments": [
+      {
+        "family_id": "dev-gamma",
+        "external_id": "gamma-report",
+        "grade": 2
+      },
+      {
+        "family_id": "dev-gamma",
+        "external_id": "alpha-overview",
+        "grade": 1
+      },
+      {
+        "family_id": "eval-high-frequency",
+        "external_id": "alpha-overview",
+        "grade": 2
+      },
+      {
+        "family_id": "eval-high-frequency",
+        "external_id": "alpha-padded",
+        "grade": 0
+      },
+      {
+        "family_id": "eval-professional",
+        "external_id": "quasar-brief",
+        "grade": 2
+      },
+      {
+        "family_id": "eval-professional",
+        "external_id": "quasar-blast",
+        "grade": 0
+      },
+      {
+        "family_id": "eval-professional",
+        "external_id": "delta-memo",
+        "grade": 0
+      },
+      {
+        "family_id": "eval-professional",
+        "external_id": "alpha-overview",
+        "grade": 0
+      },
+      {
+        "family_id": "eval-professional",
+        "external_id": "gamma-report",
+        "grade": 0
+      },
+      {
+        "family_id": "eval-professional",
+        "external_id": "alpha-padded",
+        "grade": 0
+      }
+    ]
+  }
+}

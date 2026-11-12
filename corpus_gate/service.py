@@ -25,6 +25,8 @@ class CorpusGate:
         self.notices = Notices(self.db)
         from corpus_gate.text.search import SearchIndex
         self.search = SearchIndex(self.db)
+        from corpus_gate.research.studies import Studies
+        self.research = Studies(self.db)
 
     def __enter__(self):
         return self
@@ -62,6 +64,17 @@ class CorpusGate:
             'search.verify': (self.search.verify, 'index_id', ''),
             'search.query': (self.search.query, 'index_id query context', 'limit'),
             'search.concordance': (self.search.concordance, 'index_id document_id term context', 'radius'),
+            'research.create': (self.research.create, 'study_id index_id context', ''),
+            'research.get': (self.research.get, 'study_id', 'version'),
+            'research.list': (self.research.listing, '', ''),
+            'research.family_add': (self.research.add_family, 'study_id family_id kind role variants', ''),
+            'research.variant_add': (self.research.add_variant, 'study_id family_id variant_id text', ''),
+            'research.judge': (self.research.judge, 'study_id family_id document_id grade actor', ''),
+            'research.tune': (self.research.tune, 'study_id', 'k1_values b_values k'),
+            'research.lock': (self.research.lock, 'study_id', ''),
+            'research.revise': (self.research.revise, 'study_id', ''),
+            'research.report': (self.research.report, 'study_id', 'version k resamples'),
+            'research.export': (self.research.export, 'study_id', 'version k include_snippets'),
             'release.statistics': (bind(statistics.distribution), 'release_id', ''),
             'release.vocabulary': (bind(statistics.vocabulary), 'release_id', 'limit'),
             'release.overlap': (bind(statistics.overlap), 'release_id', ''),

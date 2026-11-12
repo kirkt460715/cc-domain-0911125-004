@@ -8,6 +8,7 @@ from corpus_gate.ingest import sources, formats, bundles
 from corpus_gate.text import profiles
 from corpus_gate.dedup import clusters
 from corpus_gate.releases import manifests, exporting, transfer
+from corpus_gate.review import desk
 
 
 def read(path, maximum=33554432):
@@ -88,6 +89,8 @@ def parser():
     sub.add_parser('operations')
     demo = sub.add_parser('demo')
     demo.add_argument('--fixture', required=True)
+    research_demo = sub.add_parser('research-demo')
+    research_demo.add_argument('--fixture', required=True)
     return root
 
 
@@ -124,6 +127,51 @@ def demonstrate(app, fixture):
     if not checked['ok']:
         fail('demo_integrity', 'Synthetic corpus integrity failed', problems=checked['problems'])
     return {'synthetic': True, 'checkpoint_cursor': first['cursor'], 'ingested_records': completed['total'], 'accepted_cluster_members': len(clustered['members']), 'clusters': len(clusters.groups(app.db, 'demo-clusters')), 'published_documents': len(published['members']), 'release_digest': published['digest'], 'export_integrity': verified['integrity'], 'withdrawal_blocks_export': blocked, 'integrity': checked['ok']}
+
+
+def research_demonstrate(app, fixture):
+    shape(fixture, {'source_id', 'authorization', 'profile', 'records', 'context', 'study'})
+    spec = fixture['study']
+    shape(spec, {'study_id', 'index_id', 'editor', 'families', 'judgments', 'k'})
+    sources.create(app.db, fixture['source_id'], fixture['authorization'])
+    profiles.put(app.db, 'default', 0, fixture['profile'])
+    batch.stage(app.db, 'research-batch', fixture['source_id'], 'default', fixture['records'])
+    completed = batch.run(app.db, 'research-batch', 1)
+    if completed['counts'].get('failed'):
+        fail('demo_input', 'Synthetic records failed ingestion', records=batch.records(app.db, 'research-batch'))
+    app.search.build(spec['index_id'])
+    desk.register(app.db, spec['editor'], 'reviewer')
+    app.research.create(spec['study_id'], spec['index_id'], fixture['context'])
+    for family in spec['families']:
+        shape(family, {'family_id', 'kind', 'role', 'variants'})
+        app.research.add_family(spec['study_id'], family['family_id'], family['kind'], family['role'], family['variants'])
+    for judgment in spec['judgments']:
+        shape(judgment, {'family_id', 'external_id', 'grade'})
+        head = documents.head(app.db, fixture['source_id'], judgment['external_id'])
+        if head is None:
+            fail('demo_judgment', 'Judgment references an unknown record', external_id=judgment['external_id'])
+        app.research.judge(spec['study_id'], judgment['family_id'], head['document_id'], judgment['grade'], spec['editor'])
+    tuned = app.research.tune(spec['study_id'])
+    app.research.lock(spec['study_id'])
+    result = app.research.report(spec['study_id'], k=spec['k'])
+    envelope = app.research.export(spec['study_id'], k=spec['k'])
+    ranked = envelope['payload']['report']['families'][0]['variants'][0]['systems']['tf']['ranking']
+    if not ranked or 'snippet' not in ranked[0]:
+        fail('demo_snippets', 'Authorized export must carry original text snippets')
+    source = sources.get(app.db, fixture['source_id'])
+    sources.revoke(app.db, fixture['source_id'], source['revision'], 'Synthetic withdrawal')
+    blocked = False
+    try:
+        app.research.export(spec['study_id'], k=spec['k'])
+    except GateError as exc:
+        if exc.code != 'research_export_authorization':
+            raise
+        blocked = True
+    numeric = app.research.export(spec['study_id'], k=spec['k'], include_snippets=False)
+    if not blocked or not numeric['payload']['authorization']['numeric']['allowed']:
+        fail('demo_authorization', 'Revocation must block snippets while numeric results stay deliverable')
+    parameters = tuned['parameters']
+    return {'synthetic': True, 'study_id': spec['study_id'], 'documents': completed['total'], 'tuned': {'k1': parameters['k1'], 'b': parameters['b'], 'dev_ndcg': parameters['dev_ndcg']}, 'overall': result['overall'], 'groups': result['groups'], 'regressions': result['regressions'], 'intervals': result['intervals'], 'snippets_blocked_after_revoke': blocked, 'numeric_allowed_after_revoke': numeric['payload']['authorization']['numeric']['allowed']}
 
 
 def execute(app, args):
@@ -164,6 +212,8 @@ def execute(app, args):
         return [{'operation': key, 'required': required.split(), 'optional': optional.split()} for key, (_, required, optional) in sorted(app.operations().items())]
     if args.command == 'demo':
         return demonstrate(app, json_file(args.fixture))
+    if args.command == 'research-demo':
+        return research_demonstrate(app, json_file(args.fixture))
     fail('command', 'Unsupported command')
 
 
